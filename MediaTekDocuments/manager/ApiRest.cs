@@ -54,7 +54,7 @@ namespace MediaTekDocuments.manager
         }
 
         /// <summary>
-        /// Envoi une demande à l'API et récupère la réponse.
+        /// Envoi une demande à l'API et récupère la réponse
         /// </summary>
         /// <param name="methode">verbe http (GET, POST, PUT, DELETE)</param>
         /// <param name="message">message à envoyer dans l'URL</param>
