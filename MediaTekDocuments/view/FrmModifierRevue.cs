@@ -12,77 +12,32 @@ using MediaTekDocuments.controller;
 
 namespace MediaTekDocuments.view
 {
-    public partial class FrmModifierLivre : Form
+    public partial class FrmModifierRevue : Form
     {
-        private Livre livre;
+        private Revue revue;
         private BindingSource bdgGenres = new BindingSource();
         private BindingSource bdgPublics = new BindingSource();
         private BindingSource bdgRayons = new BindingSource();
         private FrmMediatekController controller = new FrmMediatekController();
         private FrmMediatek frmMediatek;
-
-        public FrmModifierLivre(Livre livre, FrmMediatek frmMediatek)
+        public FrmModifierRevue(Revue revue, FrmMediatek frmMediatek)
         {
             InitializeComponent();
-            this.livre = livre;
             this.frmMediatek = frmMediatek;
-            txbId.Text = livre.Id.ToString();
-            txbLivresIsbn.Text = livre.Isbn.ToString();
-            txbLivresTitre.Text = livre.Titre;
-            txbLivresAuteur.Text = livre.Auteur;
-            txbLivresCollection.Text = livre.Collection;
-            txbLivresImage.Text = livre.Image;
-
-
-
+            this.revue = revue;
+            txbId.Text = revue.Id.ToString();
+            txbPeriodicite.Text = revue.Periodicite;
+            txbRevueTitre.Text = revue.Titre;
+            txbDispo.Text = revue.DelaiMiseADispo.ToString();
+            txbRevueImage.Text = revue.Image;
         }
 
-        /// <summary>
-        /// Sélectionne automatiquement l'élément dans la ComboBox si la valeur correspond
-        /// </summary>
-        private void SetSelectedComboBox(ComboBox cbx, string value)
+        private void FrmModifierRevue_Load(object sender, EventArgs e)
         {
-            if (cbx.Items.Count > 0)
-            {
-                foreach (var item in cbx.Items)
-                {
-                    // Vérifier si l’élément est un objet Categorie et comparer son Libelle
-                    if (item is Categorie cat && cat.Libelle.Trim() == value.Trim())
-                    {
-                        cbx.SelectedItem = item;
-                        Console.WriteLine($"{cbx.Name} sélectionne : {cat.Libelle}");
-                        return;
-                    }
-                }
-
-                Console.WriteLine($"Valeur '{value}' introuvable dans {cbx.Name}");
-            }
-            else
-            {
-                Console.WriteLine($"La ComboBox {cbx.Name} est vide !");
-            }
-        }
-
-
-        public void RemplirCombo(List<Categorie> lesCategories, BindingSource bdg, ComboBox cbx)
-        {
-            bdg.DataSource = lesCategories;
-            cbx.DataSource = bdg;
-            if (cbx.Items.Count > 0)
-            {
-                cbx.SelectedIndex = -1;
-            }
-        }
-
-        private void FrmModifierLivre_Load(object sender, EventArgs e)
-        {
-
-
-
             try
             {
                 // Charger et afficher l'image dans le PictureBox
-                pcbLivresImage.Image = new Bitmap(txbLivresImage.Text);
+                pcbLivresImage.Image = new Bitmap(txbRevueImage.Text);
                 pcbLivresImage.SizeMode = PictureBoxSizeMode.Zoom; // Ajuster l'image pour qu'elle tienne bien dans le PictureBox
             }
             catch (Exception ex)
@@ -115,57 +70,91 @@ namespace MediaTekDocuments.view
             if (rayons.Count > 0) RemplirCombo(rayons, bdgRayons, cb_rayon);
 
             // Maintenant que les ComboBox sont remplies, on peut sélectionner les valeurs
-            SetSelectedComboBox(cb_genre, livre.Genre);
-            SetSelectedComboBox(cb_public, livre.Public);
-            SetSelectedComboBox(cb_rayon, livre.Rayon);
+            SetSelectedComboBox(cb_genre, revue.Genre);
+            SetSelectedComboBox(cb_public, revue.Public);
+            SetSelectedComboBox(cb_rayon, revue.Rayon);
         }
-
-        private void btn_modifierLivre_Click(object sender, EventArgs e)
+        public void RemplirCombo(List<Categorie> lesCategories, BindingSource bdg, ComboBox cbx)
         {
-            ModifierLivre();
-            frmMediatek.lesLivres = controller.GetAllLivres();
-            frmMediatek.RemplirLivresListeComplete();
+            bdg.DataSource = lesCategories;
+            cbx.DataSource = bdg;
+            if (cbx.Items.Count > 0)
+            {
+                cbx.SelectedIndex = -1;
+            }
         }
 
-        private void ModifierLivre()
+        /// <summary>
+        /// Sélectionne automatiquement l'élément dans la ComboBox si la valeur correspond
+        /// </summary>
+        private void SetSelectedComboBox(ComboBox cbx, string value)
+        {
+            if (cbx.Items.Count > 0)
+            {
+                foreach (var item in cbx.Items)
+                {
+                    // Vérifier si l’élément est un objet Categorie et comparer son Libelle
+                    if (item is Categorie cat && cat.Libelle.Trim() == value.Trim())
+                    {
+                        cbx.SelectedItem = item;
+                        Console.WriteLine($"{cbx.Name} sélectionne : {cat.Libelle}");
+                        return;
+                    }
+                }
+
+                Console.WriteLine($"Valeur '{value}' introuvable dans {cbx.Name}");
+            }
+            else
+            {
+                Console.WriteLine($"La ComboBox {cbx.Name} est vide !");
+            }
+        }
+
+        private void btn_modifierRevue_Click(object sender, EventArgs e)
+        {
+            ModifierRevue();
+
+            frmMediatek.lesRevues = controller.GetAllRevues();
+            frmMediatek.RemplirRevuesListeComplete();
+        }
+
+        private void ModifierRevue()
         {
             // Vérifie que tous les champs sont remplis
-            if (string.IsNullOrWhiteSpace(txbLivresTitre.Text) ||
-                txbLivresIsbn.Text == null ||
-                string.IsNullOrWhiteSpace(txbLivresAuteur.Text) ||
-                string.IsNullOrWhiteSpace(txbLivresCollection.Text) ||
+            if (string.IsNullOrWhiteSpace(txbRevueTitre.Text) ||
+                txbId.Text == null ||
+                string.IsNullOrWhiteSpace(txbPeriodicite.Text) ||
+                string.IsNullOrWhiteSpace(txbDispo.Text) ||
                 cb_genre.SelectedItem == null ||
                 cb_public.SelectedItem == null ||
-                cb_rayon.SelectedItem == null ||
-                txbId == null)
+                cb_rayon.SelectedItem == null)
             {
                 MessageBox.Show("Tous les champs doivent être remplis.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            Livre livreModifie = new Livre(
+            Revue revueModifie = new Revue(
                 txbId.Text,
-                txbLivresTitre.Text,
-                txbLivresImage.Text,
-                txbLivresIsbn.Text,
-                txbLivresAuteur.Text,
-                txbLivresCollection.Text,
+                txbRevueTitre.Text,
+                txbRevueImage.Text,
                 controller.GetIdByNameOfGenre(cb_genre.Text), cb_genre.Text,
                 controller.GetIdByNameOfPublic(cb_public.Text), cb_public.Text,
-                controller.GetIdByNameOfRayon(cb_rayon.Text), cb_rayon.Text
+                controller.GetIdByNameOfRayon(cb_rayon.Text), cb_rayon.Text,
+                txbPeriodicite.Text,
+                int.Parse(txbDispo.Text)
             );
 
             Document documentModifie = new Document(
                 txbId.Text,
-                txbLivresTitre.Text,
-                txbLivresImage.Text,
+                txbRevueTitre.Text,
+                txbRevueImage.Text,
                 controller.GetIdByNameOfGenre(cb_genre.Text), cb_genre.Text,
                 controller.GetIdByNameOfPublic(cb_public.Text), cb_public.Text,
                 controller.GetIdByNameOfRayon(cb_rayon.Text), cb_rayon.Text
             );
 
             // Appelle l'API pour ajouter le livre
-            bool succes = controller.ModifierLivre(livreModifie, documentModifie);
+            bool succes = controller.ModifierRevue(revueModifie, documentModifie);
 
             if (succes)
             {
@@ -176,6 +165,7 @@ namespace MediaTekDocuments.view
             {
                 MessageBox.Show("Erreur lors de l'ajout du livre.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            frmMediatek.RemplirRevuesListeComplete();
         }
 
         private void btn_parcourir_Click(object sender, EventArgs e)
@@ -190,13 +180,12 @@ namespace MediaTekDocuments.view
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     // Mettre à jour le champ texte avec le chemin du fichier sélectionné
-                    txbLivresImage.Text = openFileDialog.FileName;
+                    txbRevueImage.Text = openFileDialog.FileName;
 
                     try
                     {
-                        // Charger et afficher l'image dans le PictureBox
                         pcbLivresImage.Image = new Bitmap(openFileDialog.FileName);
-                        pcbLivresImage.SizeMode = PictureBoxSizeMode.Zoom; // Ajuster l'image pour qu'elle tienne bien dans le PictureBox
+                        pcbLivresImage.SizeMode = PictureBoxSizeMode.Zoom;
                     }
                     catch (Exception ex)
                     {

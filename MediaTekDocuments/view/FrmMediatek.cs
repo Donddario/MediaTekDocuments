@@ -61,7 +61,7 @@ namespace MediaTekDocuments.view
 
         #region Onglet Livres
         private readonly BindingSource bdgLivresListe = new BindingSource();
-        private List<Livre> lesLivres = new List<Livre>();
+        public List<Livre> lesLivres = new List<Livre>();
 
         /// <summary>
         /// Ouverture de l'onglet Livres : 
@@ -318,7 +318,7 @@ namespace MediaTekDocuments.view
         /// Affichage de la liste complète des livres
         /// et annulation de toutes les recherches et filtres
         /// </summary>
-        private void RemplirLivresListeComplete()
+        public void RemplirLivresListeComplete()
         {
             RemplirLivresListe(lesLivres);
             VideLivresZones();
@@ -376,7 +376,7 @@ namespace MediaTekDocuments.view
 
         #region Onglet Dvd
         private readonly BindingSource bdgDvdListe = new BindingSource();
-        private List<Dvd> lesDvd = new List<Dvd>();
+        public List<Dvd> lesDvd = new List<Dvd>();
 
         /// <summary>
         /// Ouverture de l'onglet Dvds : 
@@ -633,7 +633,7 @@ namespace MediaTekDocuments.view
         /// Affichage de la liste complète des Dvd
         /// et annulation de toutes les recherches et filtres
         /// </summary>
-        private void RemplirDvdListeComplete()
+        public void RemplirDvdListeComplete()
         {
             RemplirDvdListe(lesDvd);
             VideDvdZones();
@@ -691,7 +691,7 @@ namespace MediaTekDocuments.view
 
         #region Onglet Revues
         private readonly BindingSource bdgRevuesListe = new BindingSource();
-        private List<Revue> lesRevues = new List<Revue>();
+        public List<Revue> lesRevues = new List<Revue>();
 
         /// <summary>
         /// Ouverture de l'onglet Revues : 
@@ -945,7 +945,7 @@ namespace MediaTekDocuments.view
         /// Affichage de la liste complète des revues
         /// et annulation de toutes les recherches et filtres
         /// </summary>
-        private void RemplirRevuesListeComplete()
+        public void RemplirRevuesListeComplete()
         {
             RemplirRevuesListe(lesRevues);
             VideRevuesZones();

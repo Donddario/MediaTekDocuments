@@ -46,16 +46,16 @@ namespace MediaTekDocuments.view
                     if (item is Categorie cat && cat.Libelle.Trim() == value.Trim())
                     {
                         cbx.SelectedItem = item;
-                        Console.WriteLine($"✅ {cbx.Name} sélectionne : {cat.Libelle}");
+                        Console.WriteLine($"{cbx.Name} sélectionne : {cat.Libelle}");
                         return;
                     }
                 }
 
-                Console.WriteLine($"⚠️ Valeur '{value}' introuvable dans {cbx.Name}");
+                Console.WriteLine($"Valeur '{value}' introuvable dans {cbx.Name}");
             }
             else
             {
-                Console.WriteLine($"⚠️ La ComboBox {cbx.Name} est vide !");
+                Console.WriteLine($"La ComboBox {cbx.Name} est vide !");
             }
         }
 
@@ -87,9 +87,9 @@ namespace MediaTekDocuments.view
             var publics = controller.GetAllPublics();
             var rayons = controller.GetAllRayons();
 
-            Console.WriteLine($"📌 Genres récupérés : {genres.Count}");
-            Console.WriteLine($"📌 Publics récupérés : {publics.Count}");
-            Console.WriteLine($"📌 Rayons récupérés : {rayons.Count}");
+            Console.WriteLine($"Genres récupérés : {genres.Count}");
+            Console.WriteLine($"Publics récupérés : {publics.Count}");
+            Console.WriteLine($"Rayons récupérés : {rayons.Count}");
 
             // Remplir les ComboBox seulement si elles contiennent des données
             if (genres.Count > 0) RemplirCombo(genres, bdgGenres, cb_genre);
@@ -120,7 +120,7 @@ namespace MediaTekDocuments.view
                     {
                         // Charger et afficher l'image dans le PictureBox
                         pcbLivresImage.Image = new Bitmap(openFileDialog.FileName);
-                        pcbLivresImage.SizeMode = PictureBoxSizeMode.Zoom; // Ajuster l'image pour qu'elle tienne bien dans le PictureBox
+                        pcbLivresImage.SizeMode = PictureBoxSizeMode.Zoom;
                     }
                     catch (Exception ex)
                     {

@@ -113,9 +113,8 @@ namespace MediaTekDocuments.view
 
                     try
                     {
-                        // Charger et afficher l'image dans le PictureBox
                         pcbLivresImage.Image = new Bitmap(openFileDialog.FileName);
-                        pcbLivresImage.SizeMode = PictureBoxSizeMode.Zoom; // Ajuster l'image pour qu'elle tienne bien dans le PictureBox
+                        pcbLivresImage.SizeMode = PictureBoxSizeMode.Zoom;
                     }
                     catch (Exception ex)
                     {
