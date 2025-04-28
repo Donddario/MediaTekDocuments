@@ -10,7 +10,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 
-
 namespace MediaTekDocuments.dal
 {
     /// <summary>
@@ -40,7 +39,7 @@ namespace MediaTekDocuments.dal
         private const string POST = "POST";
         /// <summary>
         /// méthode HTTP pour update
-        /// 
+        /// </summary>
         private const string PUT = "PUT";
 
         private const string DELETE = "DELETE";
@@ -63,7 +62,7 @@ namespace MediaTekDocuments.dal
                 authenticationString = "admin:adminpwd";
                 api = ApiRest.GetInstance(uriApi, authenticationString);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Environment.Exit(0);
             }
@@ -83,8 +82,19 @@ namespace MediaTekDocuments.dal
         }
 
         /// <summary>
+        /// Retourne tous les états à partir de la BDD
+        /// </summary>
+        /// <returns>Liste d'objets Etat</returns>
+        public List<Etat> GetAllEtats()
+        {
+            IEnumerable<Etat> lesEtats = TraitementRecup<Etat>(GET, "etat", null);
+            return new List<Etat>(lesEtats);
+        }
+
+        /// <summary>
         /// Retourne tous les genres à partir de la BDD
-        /// </summary        /// <returns>Liste d'objets Genre</returns>
+        /// </summary>
+        /// <returns>Liste d'objets Genre</returns>
         public List<Categorie> GetAllGenres()
         {
             IEnumerable<Genre> lesGenres = TraitementRecup<Genre>(GET, "genre", null);
@@ -190,9 +200,6 @@ namespace MediaTekDocuments.dal
             return abonnementsAlerte;
         }
 
-
-
-
         /// <summary>
         /// Retourne une commande spécifique à partir de son ID.
         /// </summary>
@@ -266,25 +273,23 @@ namespace MediaTekDocuments.dal
         {
             try
             {
-                // 🔹 Conversion en JSON pour l'URL (comme Postman)
+                // Conversion en JSON pour l'URL (comme Postman)
                 string jsonId = Uri.EscapeDataString(JsonConvert.SerializeObject(new { id }));
 
-                // 🔹 Création de l'URL avec le JSON directement
+                // Création de l'URL avec le JSON directement
                 string url = $"exemplaire/{jsonId}";
 
-                // 🔹 Appel de l'API
-                var result = TraitementRecup<Exemplaire>(GET, url, ""); // Pas de body
+                // Appel de l'API
+                var result = TraitementRecup<Exemplaire>(GET, url, "");
 
-                // 🔹 Vérification et retour de l'exemplaire trouvé
+                // Vérification et retour de l'exemplaire trouvé
                 return result?.FirstOrDefault(ex => ex.Id == id);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }
         }
-
-
 
         /// <summary>
         /// Retourne une commande spécifique à partir de son ID.
@@ -312,7 +317,6 @@ namespace MediaTekDocuments.dal
             return result?.FirstOrDefault(cmd => cmd.Id == id);
         }
 
-
         /// <summary>
         /// Retourne toutes les dvd à partir de la BDD
         /// </summary>
@@ -336,7 +340,6 @@ namespace MediaTekDocuments.dal
         //en construction
         public bool AjouterLivreDvD(object livreDvd)
         {
-            //effectuer une requete API de POST dans la table livredvd avec id
             try
             {
                 // Sélectionner uniquement les champs requis
@@ -347,15 +350,13 @@ namespace MediaTekDocuments.dal
                     id = docDict.ContainsKey("Id") ? docDict["Id"]?.ToString() : null,
                 };
 
-
                 string jsonPayload = JsonConvert.SerializeObject(
-             livreDvdFiltré,
-                new Newtonsoft.Json.JsonSerializerSettings
-                {
-                    ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver()
-                }
+                    livreDvdFiltré,
+                    new Newtonsoft.Json.JsonSerializerSettings
+                    {
+                        ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver()
+                    }
                 );
-
 
                 // Encapsuler dans "champs=" et encoder en application/x-www-form-urlencoded
                 string formEncodedPayload = $"champs={Uri.EscapeDataString(jsonPayload)}";
@@ -370,7 +371,7 @@ namespace MediaTekDocuments.dal
 
                 return (liste != null);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -388,8 +389,8 @@ namespace MediaTekDocuments.dal
                 {
                     id = docDict["Id"]?.ToString() ?? "MISSING_ID",
                     dateFinAbonnement = docDict["DateFinAbonnement"] != null && DateTime.TryParse(docDict["DateFinAbonnement"].ToString(), out DateTime date)
-                ? date.ToString("yyyy-MM-dd") // Formatage pour MySQL
-                : null,
+                        ? date.ToString("yyyy-MM-dd")
+                        : null,
                     idRevue = docDict["IdRevue"]?.ToString() ?? "MISSING_IDREVUE"
                 };
 
@@ -421,50 +422,59 @@ namespace MediaTekDocuments.dal
 
                 return liste != null;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
-
         }
 
         public bool AjouterExemplaire(Exemplaire exemplaire)
         {
             try
             {
-                // Vérification et extraction des données
                 var docDict = JObject.Parse(JsonConvert.SerializeObject(exemplaire));
+                dynamic exemplaireTriage;
 
-                // Extraction et conversion des champs
-                var exemplaireTriage = new
+                if (exemplaire.Numero == 0)
                 {
-                    id = docDict["Id"]?.ToString() ?? "MISSING_ID",
-                    dateAchat = docDict["DateAchat"] != null && DateTime.TryParse(docDict["DateAchat"].ToString(), out DateTime date)
-                ? date.ToString("yyyy-MM-dd") // Formatage pour MySQL
-                : null,
-                    photo = docDict["Photo"]?.ToString() ?? "",
-                    idEtat = docDict["IdEtat"]?.ToString() ?? "MISSING_IDETAT"
-                };
+                    exemplaireTriage = new
+                    {
+                        id = docDict["Id"]?.ToString() ?? "MISSING_ID",
+                        dateAchat = docDict["DateAchat"] != null && DateTime.TryParse(docDict["DateAchat"].ToString(), out DateTime date)
+                            ? date.ToString("yyyy-MM-dd")
+                            : null,
+                        photo = docDict["Photo"]?.ToString() ?? "",
+                        idEtat = docDict["IdEtat"]?.ToString() ?? "MISSING_IDETAT"
+                    };
+                }
+                else
+                {
+                    exemplaireTriage = new
+                    {
+                        id = docDict["Id"]?.ToString() ?? "MISSING_ID",
+                        numero = docDict.ContainsKey("Numero") && int.TryParse(docDict["Numero"]?.ToString(), out int result) ? result : 0,
+                        dateAchat = docDict["DateAchat"] != null && DateTime.TryParse(docDict["DateAchat"].ToString(), out DateTime date)
+                            ? date.ToString("yyyy-MM-dd")
+                            : null,
+                        photo = docDict["Photo"]?.ToString() ?? "",
+                        idEtat = docDict["IdEtat"]?.ToString() ?? "MISSING_IDETAT"
+                    };
+                }
 
-                // Vérification avant envoi
+                // Vérification
                 if (string.IsNullOrEmpty(exemplaireTriage.id) || string.IsNullOrEmpty(exemplaireTriage.idEtat))
                 {
                     return false;
                 }
 
-                // Sérialisation en JSON
-                string jsonPayload = JsonConvert.SerializeObject(
-                    exemplaireTriage,
+                string jsonPayload = JsonConvert.SerializeObject(exemplaireTriage,
                     new JsonSerializerSettings
                     {
                         ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver()
-                    }
-                );
+                    });
 
-                // Encapsuler dans "champs=" et encoder en application/x-www-form-urlencoded
                 string formEncodedPayload = $"champs={Uri.EscapeDataString(jsonPayload)}";
 
-                // Envoi de la requête POST
                 List<Document> liste = TraitementRecup<Document>(POST, "exemplaire", formEncodedPayload);
 
                 if (liste == null)
@@ -472,13 +482,12 @@ namespace MediaTekDocuments.dal
                     return false;
                 }
 
-                return liste != null;
+                return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
-
         }
 
         public bool AjouterCommande(Commande commande)
@@ -493,8 +502,8 @@ namespace MediaTekDocuments.dal
                 {
                     id = docDict["Id"]?.ToString() ?? "MISSING_ID",
                     dateCommande = docDict["DateCommande"] != null && DateTime.TryParse(docDict["DateCommande"].ToString(), out DateTime date)
-                ? date.ToString("yyyy-MM-dd") // Formatage pour MySQL
-                : null,
+                        ? date.ToString("yyyy-MM-dd")
+                        : null,
                     montant = docDict["Montant"]?.ToString() ?? ""
                 };
 
@@ -520,11 +529,10 @@ namespace MediaTekDocuments.dal
 
                 return liste != null;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
-
         }
 
         public bool AjouterCommandeDocument(CommandeDocument commandeDocument)
@@ -564,11 +572,10 @@ namespace MediaTekDocuments.dal
 
                 return liste != null;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
-
         }
 
         public bool AjouterSuivi(Suivi suivi)
@@ -608,17 +615,14 @@ namespace MediaTekDocuments.dal
 
                 return liste != null;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
-
         }
 
         public bool AjouterRevue(object revue)
         {
-            //effectuer une requete API de POST dans la table livre avec id, isbn, auteur et collection
-
             try
             {
                 // Sélectionner uniquement les champs requis
@@ -627,20 +631,17 @@ namespace MediaTekDocuments.dal
                 var revueFiltré = new
                 {
                     id = docDict.ContainsKey("Id") ? docDict["Id"]?.ToString() : null,
-                    periodicite = docDict.ContainsKey("Periodicite") ? docDict["Periodicite"]?.ToString() : null, // MAJUSCULE CORRIGÉE
-                    delaiMiseADispo = docDict.ContainsKey("DelaiMiseADispo") && int.TryParse(docDict["DelaiMiseADispo"]?.ToString(), out int result) ? result : 0 // MAJUSCULE CORRIGÉE
-
+                    periodicite = docDict.ContainsKey("Periodicite") ? docDict["Periodicite"]?.ToString() : null,
+                    delaiMiseADispo = docDict.ContainsKey("DelaiMiseADispo") && int.TryParse(docDict["DelaiMiseADispo"]?.ToString(), out int result) ? result : 0
                 };
 
-
                 string jsonPayload = JsonConvert.SerializeObject(
-             revueFiltré,
-                new Newtonsoft.Json.JsonSerializerSettings
-                {
-                    ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver()
-                }
+                    revueFiltré,
+                    new Newtonsoft.Json.JsonSerializerSettings
+                    {
+                        ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver()
+                    }
                 );
-
 
                 // Encapsuler dans "champs=" et encoder en application/x-www-form-urlencoded
                 string formEncodedPayload = $"champs={Uri.EscapeDataString(jsonPayload)}";
@@ -655,19 +656,14 @@ namespace MediaTekDocuments.dal
 
                 return (liste != null);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
-
-
-            return true;
         }
 
         public bool AjouterLivre(object livre)
         {
-            //effectuer une requete API de POST dans la table livre avec id, isbn, auteur et collection
-
             try
             {
                 // Sélectionner uniquement les champs requis
@@ -681,15 +677,13 @@ namespace MediaTekDocuments.dal
                     collection = docDict.ContainsKey("Collection") ? docDict["Collection"]?.ToString() : null
                 };
 
-
                 string jsonPayload = JsonConvert.SerializeObject(
-             livreFiltré,
-                new Newtonsoft.Json.JsonSerializerSettings
-                {
-                    ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver()
-                }
+                    livreFiltré,
+                    new Newtonsoft.Json.JsonSerializerSettings
+                    {
+                        ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver()
+                    }
                 );
-
 
                 // Encapsuler dans "champs=" et encoder en application/x-www-form-urlencoded
                 string formEncodedPayload = $"champs={Uri.EscapeDataString(jsonPayload)}";
@@ -704,13 +698,10 @@ namespace MediaTekDocuments.dal
 
                 return (liste != null);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
-
-
-            return true;
         }
 
         public bool AjouterDocument(object document)
@@ -730,15 +721,13 @@ namespace MediaTekDocuments.dal
                     image = docDict.ContainsKey("Image") ? docDict["Image"]?.ToString() : null
                 };
 
-
                 string jsonPayload = JsonConvert.SerializeObject(
-             documentFiltré,
-                new Newtonsoft.Json.JsonSerializerSettings
-                {
-                    ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver()
-                }
+                    documentFiltré,
+                    new Newtonsoft.Json.JsonSerializerSettings
+                    {
+                        ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver()
+                    }
                 );
-
 
                 // Encapsuler dans "champs=" et encoder en application/x-www-form-urlencoded
                 string formEncodedPayload = $"champs={Uri.EscapeDataString(jsonPayload)}";
@@ -753,7 +742,7 @@ namespace MediaTekDocuments.dal
 
                 return (liste != null);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -761,8 +750,6 @@ namespace MediaTekDocuments.dal
 
         public bool AjouterDvd(object dvd)
         {
-            //effectuer une requete API de POST dans la table livre avec id, isbn, auteur et collection
-
             try
             {
                 // Sélectionner uniquement les champs requis
@@ -776,15 +763,13 @@ namespace MediaTekDocuments.dal
                     duree = docDict.ContainsKey("Duree") ? docDict["Duree"]?.ToString() : null
                 };
 
-
                 string jsonPayload = JsonConvert.SerializeObject(
-             dvdFiltre,
-                new Newtonsoft.Json.JsonSerializerSettings
-                {
-                    ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver()
-                }
+                    dvdFiltre,
+                    new Newtonsoft.Json.JsonSerializerSettings
+                    {
+                        ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver()
+                    }
                 );
-
 
                 // Encapsuler dans "champs=" et encoder en application/x-www-form-urlencoded
                 string formEncodedPayload = $"champs={Uri.EscapeDataString(jsonPayload)}";
@@ -799,11 +784,10 @@ namespace MediaTekDocuments.dal
 
                 return (liste != null);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
-
         }
 
         /// <summary>
@@ -864,39 +848,16 @@ namespace MediaTekDocuments.dal
             return null; // Retourne null si aucun genre correspondant n'est trouvé
         }
 
-
-
-
-
         /// <summary>
         /// Retourne les exemplaires d'une revue
         /// </summary>
         /// <param name="idDocument">id de la revue concernée</param>
         /// <returns>Liste d'objets Exemplaire</returns>
-        public List<Exemplaire> GetExemplairesRevue(string idDocument)
+        public List<Exemplaire> GetAllExemplaires(string idDocument)
         {
             String jsonIdDocument = convertToJson("id", idDocument);
             List<Exemplaire> lesExemplaires = TraitementRecup<Exemplaire>(GET, "exemplaire/" + jsonIdDocument, null);
             return lesExemplaires;
-        }
-
-        /// <summary>
-        /// ecriture d'un exemplaire en base de données
-        /// </summary>
-        /// <param name="exemplaire">exemplaire à insérer</param>
-        /// <returns>true si l'insertion a pu se faire (retour != null)</returns>
-        public bool CreerExemplaire(Exemplaire exemplaire)
-        {
-            String jsonExemplaire = JsonConvert.SerializeObject(exemplaire, new CustomDateTimeConverter());
-            try
-            {
-                List<Exemplaire> liste = TraitementRecup<Exemplaire>(POST, "exemplaire", "champs=" + jsonExemplaire);
-                return (liste != null);
-            }
-            catch (Exception ex)
-            {
-            }
-            return false;
         }
 
         public void DictionnaireGenre()
@@ -907,7 +868,6 @@ namespace MediaTekDocuments.dal
             {
                 classeurGenres[genre.Id] = (Genre)genre; // Conversion Categorie -> Genre si nécessaire
             }
-
         }
 
         public void DictionnairePublic()
@@ -918,7 +878,6 @@ namespace MediaTekDocuments.dal
             {
                 classeurPublics[pub.Id] = (Public)pub; // Conversion Categorie -> Public si nécessaire
             }
-
         }
 
         public void DictionnaireRayon()
@@ -929,7 +888,42 @@ namespace MediaTekDocuments.dal
             {
                 classeurRayons[rayon.Id] = (Rayon)rayon; // Conversion Categorie -> Public si nécessaire
             }
+        }
 
+        public bool ModifierEtatExemplaire(Exemplaire exemplaire, Etat etat)
+        {
+            try
+            {
+                // Construire l'objet JSON avec seulement `isbn` et `auteur`
+                var etatFiltre = new
+                {
+                    numero = exemplaire.Numero,
+                    idEtat = etat.Id
+                };
+
+                // Convertir l'objet en JSON
+                string jsonPayload = JsonConvert.SerializeObject(etatFiltre);
+
+                // Encapsuler le JSON dans `x-www-form-urlencoded`
+                string formEncodedPayload = $"champs={Uri.EscapeDataString(jsonPayload)}";
+
+                // URL API avec l'ID du livre
+                string url = $"exemplaire/numero";
+
+                // Envoyer la requête PUT
+                List<Exemplaire> liste = TraitementRecup<Exemplaire>(PUT, url, formEncodedPayload);
+
+                if (liste == null)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         public bool ModifierRevue(Revue revue)
@@ -947,13 +941,12 @@ namespace MediaTekDocuments.dal
                 {
                     periodicite = revue.Periodicite,
                     delaiMiseADispo = revue.DelaiMiseADispo
-
                 };
 
                 // Convertir l'objet en JSON
                 string jsonPayload = JsonConvert.SerializeObject(revueFiltre);
 
-                // 🔹 Encapsuler le JSON dans `x-www-form-urlencoded`
+                // Encapsuler le JSON dans `x-www-form-urlencoded`
                 string formEncodedPayload = $"champs={Uri.EscapeDataString(jsonPayload)}";
 
                 // URL API avec l'ID du livre
@@ -969,7 +962,7 @@ namespace MediaTekDocuments.dal
 
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -994,7 +987,7 @@ namespace MediaTekDocuments.dal
                 // Convertir l'objet en JSON
                 string jsonPayload = JsonConvert.SerializeObject(revueFiltre);
 
-                // 🔹 Encapsuler le JSON dans `x-www-form-urlencoded`
+                // Encapsuler le JSON dans `x-www-form-urlencoded`
                 string formEncodedPayload = $"champs={Uri.EscapeDataString(jsonPayload)}";
 
                 // URL API avec l'ID du livre
@@ -1010,7 +1003,7 @@ namespace MediaTekDocuments.dal
 
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -1035,7 +1028,7 @@ namespace MediaTekDocuments.dal
                 // Convertir l'objet en JSON
                 string jsonPayload = JsonConvert.SerializeObject(revueFiltre);
 
-                // 🔹 Encapsuler le JSON dans `x-www-form-urlencoded`
+                // Encapsuler le JSON dans `x-www-form-urlencoded`
                 string formEncodedPayload = $"champs={Uri.EscapeDataString(jsonPayload)}";
 
                 // URL API avec l'ID du livre
@@ -1051,7 +1044,7 @@ namespace MediaTekDocuments.dal
 
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -1073,13 +1066,12 @@ namespace MediaTekDocuments.dal
                     id = suivi.Id,
                     stade = suivi.Stade,
                     idLivreDvd = suivi.IdLivreDvd
-
                 };
 
                 // Convertir l'objet en JSON
                 string jsonPayload = JsonConvert.SerializeObject(revueFiltre);
 
-                // 🔹 Encapsuler le JSON dans `x-www-form-urlencoded`
+                // Encapsuler le JSON dans `x-www-form-urlencoded`
                 string formEncodedPayload = $"champs={Uri.EscapeDataString(jsonPayload)}";
 
                 // URL API avec l'ID du livre
@@ -1095,7 +1087,7 @@ namespace MediaTekDocuments.dal
 
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -1117,14 +1109,12 @@ namespace MediaTekDocuments.dal
                     synopsis = dvd.Synopsis,
                     realisateur = dvd.Realisateur,
                     duree = dvd.Duree.ToString()
-
-
                 };
 
                 // Convertir l'objet en JSON
                 string jsonPayload = JsonConvert.SerializeObject(dvdFiltre);
 
-                // 🔹 Encapsuler le JSON dans `x-www-form-urlencoded`
+                // Encapsuler le JSON dans `x-www-form-urlencoded`
                 string formEncodedPayload = $"champs={Uri.EscapeDataString(jsonPayload)}";
 
                 // URL API avec l'ID du livre
@@ -1140,7 +1130,7 @@ namespace MediaTekDocuments.dal
 
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -1162,13 +1152,12 @@ namespace MediaTekDocuments.dal
                     isbn = livre.Isbn,
                     auteur = livre.Auteur,
                     collection = livre.Collection
-
                 };
 
                 // Convertir l'objet en JSON
                 string jsonPayload = JsonConvert.SerializeObject(livreFiltré);
 
-                // 🔹 Encapsuler le JSON dans `x-www-form-urlencoded`
+                // Encapsuler le JSON dans `x-www-form-urlencoded`
                 string formEncodedPayload = $"champs={Uri.EscapeDataString(jsonPayload)}";
 
                 // URL API avec l'ID du livre
@@ -1184,7 +1173,7 @@ namespace MediaTekDocuments.dal
 
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -1213,7 +1202,7 @@ namespace MediaTekDocuments.dal
                 // Convertir l'objet en JSON
                 string jsonPayload = JsonConvert.SerializeObject(documentFiltre);
 
-                // 🔹 Encapsuler le JSON dans `x-www-form-urlencoded`
+                // Encapsuler le JSON dans `x-www-form-urlencoded`
                 string formEncodedPayload = $"champs={Uri.EscapeDataString(jsonPayload)}";
 
                 // URL API avec l'ID du livre
@@ -1229,7 +1218,7 @@ namespace MediaTekDocuments.dal
 
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -1254,7 +1243,7 @@ namespace MediaTekDocuments.dal
                 // Convertir l'objet en JSON
                 string jsonPayload = JsonConvert.SerializeObject(LivreDvDFiltre);
 
-                // 🔹 Encapsuler le JSON dans `x-www-form-urlencoded`
+                // Encapsuler le JSON dans `x-www-form-urlencoded`
                 string formEncodedPayload = $"champs={Uri.EscapeDataString(jsonPayload)}";
 
                 // URL API avec l'ID du livre
@@ -1270,7 +1259,7 @@ namespace MediaTekDocuments.dal
 
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -1363,7 +1352,37 @@ namespace MediaTekDocuments.dal
 
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public bool SupprimerExemplaire(Exemplaire exemplaire)
+        {
+            try
+            {
+                // Vérifier que l'ID du livre est présent
+                if (exemplaire.Numero == null)
+                {
+                    return false;
+                }
+
+                // Construire l'URL avec l'ID du livre au format JSON
+                string jsonId = Uri.EscapeDataString($"{{\"numero\":\"{exemplaire.Numero}\"}}");
+                string url = $"exemplaire/{jsonId}";
+
+                // Envoyer la requête DELETE avec TraitementRecup
+                List<Exemplaire> liste = TraitementRecup<Exemplaire>(DELETE, url, null);
+
+                if (liste == null)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            catch (Exception)
             {
                 return false;
             }
@@ -1393,7 +1412,7 @@ namespace MediaTekDocuments.dal
 
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -1423,7 +1442,7 @@ namespace MediaTekDocuments.dal
 
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -1453,7 +1472,7 @@ namespace MediaTekDocuments.dal
 
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -1483,12 +1502,11 @@ namespace MediaTekDocuments.dal
 
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
         }
-
 
         public bool SupprimerDvd(Dvd dvd)
         {
@@ -1514,7 +1532,7 @@ namespace MediaTekDocuments.dal
 
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -1544,7 +1562,7 @@ namespace MediaTekDocuments.dal
 
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -1574,7 +1592,7 @@ namespace MediaTekDocuments.dal
 
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -1604,7 +1622,7 @@ namespace MediaTekDocuments.dal
 
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -1620,7 +1638,6 @@ namespace MediaTekDocuments.dal
         /// <returns>liste d'objets récupérés (ou liste vide)</returns>
         private List<T> TraitementRecup<T>(String methode, String message, String parametres)
         {
-            // trans
             List<T> liste = new List<T>();
             try
             {
@@ -1639,10 +1656,9 @@ namespace MediaTekDocuments.dal
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Environment.Exit(0);
-
             }
             return liste;
         }
@@ -1688,6 +1704,5 @@ namespace MediaTekDocuments.dal
                 serializer.Serialize(writer, value);
             }
         }
-
     }
 }
