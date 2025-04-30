@@ -27,7 +27,7 @@ namespace MediaTekDocuments.view
         {
             try
             {
-                if (txbLogin.Text != "" || txbPwd.Text != "")
+                if (txbLogin.Text != "" && txbPwd.Text != "")
                 {
                     if (controller.IsConnected(txbLogin.Text, txbPwd.Text))
                     {
