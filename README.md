@@ -55,11 +55,23 @@ Une fois la commande réceptionnée, il passe à "livrée"
 Et après le paiement, il est mis à "réglée"
 À noter : dès qu’une commande est marquée comme reçue, sa suppression n’est plus autorisée. Cela entraîne aussi la création automatique des exemplaires associés.
 <img width="821" alt="Capture d’écran 2025-05-01 à 00 46 55" src="https://github.com/user-attachments/assets/86c52386-a15e-490a-a5c3-2b4eab6c6d71" />
-
+Onglet 6 : Suivi des commandes de DVD
+Réservé au personnel du service Administratif, cet onglet centralise toutes les commandes de DVD. Il permet d’en créer de nouvelles ou de supprimer celles qui sont encore modifiables.
+Lors de la création d’une commande, son statut est automatiquement défini sur "en cours".
+L’administrateur peut ensuite mettre à jour ce statut en fonction de la situation :
+Si la livraison tarde, le statut devient "relancée"
+Si les DVD ont été réceptionnés, il passe à "livrée"
+Une fois la commande réglée, le statut est mis à "réglée"
+Dès qu'une commande est marquée comme reçue, elle ne peut plus être supprimée. Cela entraîne également la génération automatique des exemplaires correspondants.
+<img width="821" alt="Capture d’écran 2025-05-01 à 00 47 24" src="https://github.com/user-attachments/assets/c9970112-21af-43f1-804a-72b8b96616ba" />
+Onglet 7 : Abonnements aux revues
+Destiné uniquement au personnel du service Administratif, cet onglet offre une vue d’ensemble sur les abonnements aux revues. Il permet d’enregistrer de nouveaux abonnements et de supprimer ceux qui ne sont plus nécessaires.
+<img width="853" alt="Capture d’écran 2025-05-01 à 00 47 41" src="https://github.com/user-attachments/assets/54839344-b590-4b31-a6e8-dfef54185aee" />
 ## La base de données
 La base de données 'mediatek86 ' est au format MySQL.<br>
 Voici sa structure :<br>
-![img4](https://github.com/CNED-SLAM/MediaTekDocuments/assets/100127886/4314f083-ec8b-4d27-9746-fecd1387d77b)
+<img width="856" alt="Capture d’écran 2025-05-01 à 00 47 54" src="https://github.com/user-attachments/assets/478aeb6b-6aac-444d-b08b-9ec9707e493e" />
+
 <br>On distingue les documents "génériques" (ce sont les entités Document, Revue, Livres-DVD, Livre et DVD) des documents "physiques" qui sont les exemplaires de livres ou de DVD, ou bien les numéros d’une revue ou d’un journal.<br>
 Chaque exemplaire est numéroté à l’intérieur du document correspondant, et a donc un identifiant relatif. Cet identifiant est réel : ce n'est pas un numéro automatique. <br>
 Un exemplaire est caractérisé par :<br>
