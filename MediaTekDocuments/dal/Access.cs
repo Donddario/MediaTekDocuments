@@ -10,6 +10,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Security.Cryptography;
+using Serilog;
 
 namespace MediaTekDocuments.dal
 {
