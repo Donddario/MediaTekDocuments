@@ -46,6 +46,16 @@ Il est possible alors de réceptionner une nouvelle parution en saisissant son n
 Le clic sur "Valider la réception" va permettre d'ajouter un tuple dans la table Exemplaire de la BDD. La parution correspondante apparaitra alors automatiquement dans la liste des parutions et les zones de la partie "Nouvelle parution réceptionnée pour cette revue" seront réinitialisées.<br>
 Si le numéro de la parution existe déjà, il n’est pas ajouté et un message est affiché.
 ![img3](https://github.com/CNED-SLAM/MediaTekDocuments/assets/100127886/225e10f2-406a-4b5e-bfa9-368d45456056)
+Onglet 5 : Gestion des commandes de livres
+Accessible uniquement par le personnel du service Administratif, cet onglet permet de visualiser l’ensemble des commandes de livres, ainsi que d’en ajouter ou d’en supprimer.
+Lorsqu’une commande est créée, son statut initial est automatiquement défini à "en cours".
+Le responsable administratif peut ensuite mettre à jour ce statut selon l’évolution de la commande :
+En cas de retard, le statut devient "relancée"
+Une fois la commande réceptionnée, il passe à "livrée"
+Et après le paiement, il est mis à "réglée"
+À noter : dès qu’une commande est marquée comme reçue, sa suppression n’est plus autorisée. Cela entraîne aussi la création automatique des exemplaires associés.
+<img width="821" alt="Capture d’écran 2025-05-01 à 00 46 55" src="https://github.com/user-attachments/assets/86c52386-a15e-490a-a5c3-2b4eab6c6d71" />
+
 ## La base de données
 La base de données 'mediatek86 ' est au format MySQL.<br>
 Voici sa structure :<br>
