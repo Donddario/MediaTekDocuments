@@ -46,26 +46,26 @@ Il est possible alors de réceptionner une nouvelle parution en saisissant son n
 Le clic sur "Valider la réception" va permettre d'ajouter un tuple dans la table Exemplaire de la BDD. La parution correspondante apparaitra alors automatiquement dans la liste des parutions et les zones de la partie "Nouvelle parution réceptionnée pour cette revue" seront réinitialisées.<br>
 Si le numéro de la parution existe déjà, il n’est pas ajouté et un message est affiché.
 ![img3](https://github.com/CNED-SLAM/MediaTekDocuments/assets/100127886/225e10f2-406a-4b5e-bfa9-368d45456056)
-Onglet 5 : Gestion des commandes de livres
-Accessible uniquement par le personnel du service Administratif, cet onglet permet de visualiser l’ensemble des commandes de livres, ainsi que d’en ajouter ou d’en supprimer.
-Lorsqu’une commande est créée, son statut initial est automatiquement défini à "en cours".
+### Onglet 5 : Gestion des commandes de livres
+Accessible uniquement par le personnel du service Administratif, cet onglet permet de visualiser l’ensemble des commandes de livres, ainsi que d’en ajouter ou d’en supprimer.<br>
+Lorsqu’une commande est créée, son statut initial est automatiquement défini à "en cours".<br>
 Le responsable administratif peut ensuite mettre à jour ce statut selon l’évolution de la commande :
-En cas de retard, le statut devient "relancée"
-Une fois la commande réceptionnée, il passe à "livrée"
-Et après le paiement, il est mis à "réglée"
-À noter : dès qu’une commande est marquée comme reçue, sa suppression n’est plus autorisée. Cela entraîne aussi la création automatique des exemplaires associés.
+En cas de retard, le statut devient "relancée"<br>
+Une fois la commande réceptionnée, il passe à "livrée"<br>
+Et après le paiement, il est mis à "réglée"<br>
+À noter : dès qu’une commande est marquée comme reçue, sa suppression n’est plus autorisée. Cela entraîne aussi la création automatique des exemplaires associés.<br>
 <img width="821" alt="Capture d’écran 2025-05-01 à 00 46 55" src="https://github.com/user-attachments/assets/86c52386-a15e-490a-a5c3-2b4eab6c6d71" />
-Onglet 6 : Suivi des commandes de DVD
-Réservé au personnel du service Administratif, cet onglet centralise toutes les commandes de DVD. Il permet d’en créer de nouvelles ou de supprimer celles qui sont encore modifiables.
-Lors de la création d’une commande, son statut est automatiquement défini sur "en cours".
+### Onglet 6 : Suivi des commandes de DVD
+Réservé au personnel du service Administratif, cet onglet centralise toutes les commandes de DVD. Il permet d’en créer de nouvelles ou de supprimer celles qui sont encore modifiables.<br>
+Lors de la création d’une commande, son statut est automatiquement défini sur "en cours".<br>
 L’administrateur peut ensuite mettre à jour ce statut en fonction de la situation :
-Si la livraison tarde, le statut devient "relancée"
-Si les DVD ont été réceptionnés, il passe à "livrée"
-Une fois la commande réglée, le statut est mis à "réglée"
-Dès qu'une commande est marquée comme reçue, elle ne peut plus être supprimée. Cela entraîne également la génération automatique des exemplaires correspondants.
+Si la livraison tarde, le statut devient "relancée"<br>
+Si les DVD ont été réceptionnés, il passe à "livrée"<br>
+Une fois la commande réglée, le statut est mis à "réglée"<br>
+Dès qu'une commande est marquée comme reçue, elle ne peut plus être supprimée. Cela entraîne également la génération automatique des exemplaires correspondants.<br>
 <img width="821" alt="Capture d’écran 2025-05-01 à 00 47 24" src="https://github.com/user-attachments/assets/c9970112-21af-43f1-804a-72b8b96616ba" />
-Onglet 7 : Abonnements aux revues
-Destiné uniquement au personnel du service Administratif, cet onglet offre une vue d’ensemble sur les abonnements aux revues. Il permet d’enregistrer de nouveaux abonnements et de supprimer ceux qui ne sont plus nécessaires.
+### Onglet 7 : Abonnements aux revues
+Destiné uniquement au personnel du service Administratif, cet onglet offre une vue d’ensemble sur les abonnements aux revues. Il permet d’enregistrer de nouveaux abonnements et de supprimer ceux qui ne sont plus nécessaires.<br>
 <img width="853" alt="Capture d’écran 2025-05-01 à 00 47 41" src="https://github.com/user-attachments/assets/54839344-b590-4b31-a6e8-dfef54185aee" />
 ## La base de données
 La base de données 'mediatek86 ' est au format MySQL.<br>
@@ -96,4 +96,5 @@ avec toutes les explications pour l'utiliser (dans le readme).
 Ce mode opératoire permet d'installer l'application pour pouvoir travailler dessus.<br>
 - Installer Visual Studio 2019 entreprise et les extension Specflow et newtonsoft.json (pour ce dernier, voir l'article "Accéder à une API REST à partir d'une application C#" dans le wiki de ce dépôt : consulter juste le début pour la configuration, car la suite permet de comprendre le code existant).<br>
 - Télécharger le code et le dézipper puis renommer le dossier en "mediatekdocuments".<br>
-- Récupérer et installer l'API REST nécessaire (https://github.com/CNED-SLAM/rest_mediatekdocuments) ainsi que la base de données (les explications sont données dans le readme correspondant).
+- Récupérer et installer l'API REST nécessaire (https://github.com/CNED-SLAM/rest_mediatekdocuments) ainsi que la base de données (les explications sont données dans le readme correspondant).<br>
+- Pour installer l'application sans visual studio, allez dans le dossier Release puis installer le setup .msi
